@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 
 class App extends React.Component {
-
   constructor () {
     super()
     this.state = {
@@ -13,8 +12,8 @@ class App extends React.Component {
         timerRunning: false,
         currentTime: "20 : 00",
     }
-}
-render() {
+  }
+  render() {
     return (
         <div className="main">
             <h1>My PomoClock</h1>
@@ -30,7 +29,7 @@ render() {
         </div>
 
     );
-}
+  }
 
 incrementWorkTime = () => {
   this.setState({
@@ -52,41 +51,42 @@ decrementBreakTime = () => {
     breakTime : this.state.breakTime -1
   })
 }
+startTimer = (duration) => {
+  this.setState({timerRunning: true})
+  let time = duration * 60
+  let minutes;
+  let seconds;
+  let runningTimer = setInterval(() => {
+    this.setState({
+      timerId: runningTimer
+    })
+    minutes = Math.floor(time /60)
+    seconds = time - minutes * 60
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    this.setState({currentTime: `${minutes} : ${minutes}`})
+    if (time == 0) {
+      if(this.state.cycle === "Session"){
+        this.setState({
+          cycle: "Break",
+          timerRunning: false
+        })
+        clearInterval(this.state.timerId)
+        this.startTimer(this.state.breakTime)
+      }else {
+        this.setState({
+          cycle: "Session",
+          timerRunning: false
+        })
+        clearInterval(this.state.timerId)
+        this.startTimer(this.state.workTime)
+      }
+    }
+  })
+}
 }
 
-  // startTimer = (duration) => {
-  //   this.setState({timerRunning: true})
-  //   let time = duration * 60
-  //   let minutes;
-  //   let seconds;
-  //   let runningTimer = setInterval(() => {
-  //     this.setState({
-  //       timerId: runningTimer
-  //     })
-  //     minutes = Math.floor(time /60)
-  //     seconds = time - minutes * 60
-  //     minutes = minutes < 10 ? "0" + minutes : minutes;
-  //     seconds = seconds < 10 ? "0" + seconds : seconds;
-  //     this.setState({currentTime: `${minutes} : ${minutes}`})
-  //     if (time == 0) {
-  //       if(this.state.cycle === "Session"){
-  //         this.setState({
-  //           cycle: "Break",
-  //           timerRunning: false
-  //         })
-  //         clearInterval(this.state.timerId)
-  //         this.startTimer(this.state.breakTime)
-  //       }else {
-  //         this.setState({
-  //           cycle: "Session",
-  //           timerRunning: false
-  //         })
-  //         clearInterval(this.state.timerId)
-  //         this.startTimer(this.state.workTime)
-  //       }
-  //     }
-  //   })
-  // }
+
 
 class Timer extends React.Component {
   timer = () => {
