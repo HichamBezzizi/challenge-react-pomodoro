@@ -1,185 +1,106 @@
 import React from 'react';
 import './App.css';
+const moment = require('moment');
+
+
+const Header = () => <h1 className="header">Pomodoro Clock</h1>
+
+const SetTimer = ({ type, label, value, handleClick }) => (
+  <div className='SetTimer'>
+    <div id={`${type}-label`}>{label}</div>
+      <div className='SetTimer-controls'>
+      <button id={`${type}-decrement`} onClick={() => handleClick(false, `${type}Value`)}>&darr;</button>
+      <h1 id={`${type}-length`}>{value}</h1>
+      <button id={`${type}-increment`} onClick={() => handleClick(true, `${type}Value`)}>&uarr;</button>
+    </div>
+  </div>
+)
+
+const Timer = ({ mode, time }) => (
+  <div className='Timer'>
+    <h1 id='timer-label'>{mode === 'session' ? 'Session ' : 'Break '}</h1>
+    <h1 id='time-left'>{time}</h1>
+  </div>
+)
+
+const Controls = ({ active, handleReset, handlePlayPause }) => (
+  <div className='Controls'>
+    <button id='start_stop' onClick={handlePlayPause}>{ active ? <span>&#10074;&#10074;</span> : <span>&#9658;</span> }</button>
+    <button id='reset' onClick={handleReset}>&#8635;</button>
+  </div>
+)
 
 class App extends React.Component {
-  constructor () {
-    super()
+  constructor(props){
+    super(props)
     this.state = {
-        cycle: "Session",
-        workTime: 20,
-        breakTime: 5,
-        timerId: 0,
-        timerRunning: false,
-        currentTime: "20 : 00",
+      breakValue: 5,
+      sessionValue: 25,
+      time: 25 * 60 * 1000,
+      active: false,
+      mode: 'session'
     }
   }
-  render() {
-    return (
-        <div className="main">
-            <h1>My PomoClock</h1>
-            <Timer />
-            <TimerControllers 
-            workTime={this.state.workTime}
-            breakTime={this.state.breakTime}
-            incrementWorkTime={this.incrementWorkTime}
-            decrementWorkTime={this.decrementWorkTime}
-            incrementBreakTime={this.incrementBreakTime}
-            decrementBreakTime={this.decrementBreakTime}
-            />
-        </div>
-
-    );
+  
+  handleSetTimers = (inc, type) => {
+    if (inc && this.state[type] === 60) return
+    if (!inc && this.state[type] === 1) return
+    this.setState({ [type]: this.state[type] + (inc ? 1 : -1) })
   }
-
-incrementWorkTime = () => {
-  this.setState({
-    workTime: this.state.workTime +1
-  })
-}
-decrementWorkTime = () => {
-  this.setState({
-    workTime: this.state.workTime -1
-  })
-}
-incrementBreakTime = () => {
-  this.setState({
-    breakTime : this.state.breakTime +1
-  })
-}
-decrementBreakTime = () => {
-  this.setState({
-    breakTime : this.state.breakTime -1
-  })
-}
-startTimer = (duration) => {
-  this.setState({timerRunning: true})
-  let time = duration * 60
-  let minutes;
-  let seconds;
-  let runningTimer = setInterval(() => {
-    this.setState({
-      timerId: runningTimer
-    })
-    minutes = Math.floor(time /60)
-    seconds = time - minutes * 60
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-    this.setState({currentTime: `${minutes} : ${minutes}`})
-    if (time == 0) {
-      if(this.state.cycle === "Session"){
-        this.setState({
-          cycle: "Break",
-          timerRunning: false
-        })
-        clearInterval(this.state.timerId)
-        this.startTimer(this.state.breakTime)
-      }else {
-        this.setState({
-          cycle: "Session",
-          timerRunning: false
-        })
-        clearInterval(this.state.timerId)
-        this.startTimer(this.state.workTime)
-      }
-    }
-  })
-}
-}
-
-
-
-class Timer extends React.Component {
-  timer = () => {
-    if (this.props.timerRunning === true) {
-      clearInterval(this.props.timerId)
-      this.props.setCurrentTime("20 : 00")
-      this.props.setTimerRunning()
+  
+  handlePlayPause = () => {
+    if (this.state.active) {
+      this.setState({ active: false }, () => clearInterval(this.pomodoro))
     } 
     else {
-      this.props.cycle === "Session" ? 
-      this.props.startTimer(this.props.workTime) : 
-      this.props.startTimer(this.props.breakTime)
+      if (!this.state.touched) {
+        this.setState({ 
+          time: this.state.sessionValue * 60 * 1000, 
+          active: true, 
+          touched: true }, () => this.pomodoro = setInterval(() => this.setState({ time: this.state.time - 1000 }) ,1000)
+        )} else {
+            this.setState({
+              active: true,
+              touched: true
+            }, () => this.pomodoro = setInterval(() => this.setState({ time: this.state.time - 1000 }) ,1000))
+        }
     }
   }
-  render() {
-      return (
-          <div className="timer">
-              <button className="count-down" onClick={this.timer}>
-                {this.props.currentTime} Start
-              </button>
-              <span>{this.props.cycle}</span>
-          </div>
-      )
+  
+  handleReset = () => {
+    this.setState({ 
+      breakValue: 5, 
+      sessionValue: 25, 
+      time: 25 * 60 * 1000, 
+      active: false, 
+      mode: 'session',
+      touched: false
+    })
+    clearInterval(this.pomodoro)
   }
-}
-
-class TimerControllers extends React.Component {
-  render() {
-      return (
-          <div className="timer-controllers">
-              <WorkController 
-                workTime={this.props.workTime}
-                incrementWorkTime={this.props.incrementWorkTime}
-                decrementWorkTime={this.props.decrementWorkTime}
-                />
-
-              <BreakController 
-                breakTime={this.props.breakTime}
-                incrementBreakTime={this.props.incrementBreakTime}
-                decrementBreakTime={this.props.decrementBreakTime}
-              />
-          </div>
-      )
-  }
-}
-
-class WorkController extends React.Component {
-
-  handleWorkIncrement = () => {
-    this.props.incrementWorkTime()
-    if (this.props.timerRunning === false) {
-      this.props.setCurrentTime(this.props.workTime)
-    }
-  }
-
-  handleWorkDecrement = () => {
-    this.props.decrementWorkTime()
-    if(this.props.timerRunning === false) {
-      this.props.setCurrentTime(this.props.workTime)
-    }
-  }
-
+  
   render(){
-      return(
-          <div className="controller">
-          <p>Work</p>
-          <button onClick={this.handleWorkIncrement}> + </button>
-          <span> {this.props.workTime}</span>
-          <button onClick={this.handleWorkDecrement}> - </button>
-          </div>
-      )
-  }
-}
-
-class BreakController extends React.Component {
-
-  handleBreakIncrement = () => {
-    this.props.incrementBreakTime()
-  }
-
-  handleBreakDecrement = () => {
-    this.props.decrementBreakTime()
-  }
-
-  render() {
-      return(
-          <div className="controller">
-          <p>Break</p>
-              <button onClick={this.handleBreakIncrement}> + </button>
-              <span> {this.props.breakTime} </span>
-              <button onClick={this.handleBreakDecrement}> - </button>
-          </div>
-      )
+    return(
+    <div>
+      <Header/>
+      <div className='settings'>
+        <SetTimer 
+          type='break' 
+          label='Break Length' 
+          value={this.state.breakValue}
+          handleClick={this.handleSetTimers}
+        />
+        <SetTimer 
+          type='session' 
+          label='Session Length' 
+          value={this.state.sessionValue}
+          handleClick={this.handleSetTimers}  
+        />
+      </div>
+      <Timer mode={this.state.mode} time={moment(this.state.time).format('mm:ss')}/>
+      <Controls active={this.state.active} handleReset={this.handleReset} handlePlayPause={this.handlePlayPause}/>
+    </div>
+    );
   }
 }
 
