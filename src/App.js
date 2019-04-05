@@ -18,6 +18,7 @@ class App extends React.Component {
     if (!inc && this.state[type] === 1) return
     this.setState({ [type]: this.state[type] + (inc ? 1 : -1) })
   }
+
   handlePlayPause = () => {
     if (this.state.active) {
       this.setState({ active: false }, () => clearInterval(this.pomodoro))
@@ -36,6 +37,7 @@ class App extends React.Component {
         }
     }
   }
+  
   handleReset = () => {
     this.setState({ 
       breakValue: 5, 
@@ -54,13 +56,13 @@ class App extends React.Component {
       <div className='settings'>
         <SetTimer 
           type='break' 
-          label='Break Length' 
+          label='Break' 
           value={this.state.breakValue}
           handleClick={this.handleSetTimers}
         />
         <SetTimer 
           type='session' 
-          label='Session Length' 
+          label='Session' 
           value={this.state.sessionValue}
           handleClick={this.handleSetTimers}  
         />
@@ -74,7 +76,9 @@ class App extends React.Component {
 
 class Header extends React.Component {
   render() {
-    return <h1 className="header">Pomodoro Clock</h1>
+    return <div>
+      <h1 className="header">Pomodoro Clock</h1>
+    </div>
   }
 }
 
