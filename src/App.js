@@ -1,8 +1,13 @@
 import React from 'react';
+import Controls from './components/Controls';
+import Header from './components/Header';
+import Timer from './components/Timer';
+import SetTimer from './components/SetTimer';
 import './App.css';
+
 const moment = require('moment');
 
-class App extends React.Component {
+class PomodoroApp extends React.Component {
   constructor(props){
     super(props)
     this.state = {
@@ -13,6 +18,7 @@ class App extends React.Component {
       mode: 'session'
     }
   }
+  
   handleSetTimers = (inc, type) => {
     if (inc && this.state[type] === 60) return
     if (!inc && this.state[type] === 1) return
@@ -74,40 +80,4 @@ class App extends React.Component {
   }
 }
 
-class Header extends React.Component {
-  render() {
-    return <div>
-      <h1 className="header">Pomodoro Clock</h1>
-    </div>
-  }
-}
-
-
-const SetTimer = ({ type, label, value, handleClick }) => (
-  <div className='SetTimer'>
-    <div id={`${type}-label`}>{label}</div>
-      <div className='SetTimer-controls'>
-      <button id={`${type}-decrement`} onClick={() => handleClick(false, `${type}Value`)}>&darr;</button>
-      <h1 id={`${type}-length`}>{value}</h1>
-      <button id={`${type}-increment`} onClick={() => handleClick(true, `${type}Value`)}>&uarr;</button>
-    </div>
-  </div>
-)
-
-const Timer = ({ mode, time }) => (
-  <div className='Timer'>
-    <h1 id='timer-label'>{mode === 'session' ? 'Session ' : 'Break '}</h1>
-    <h1 id='time-left'>{time}</h1>
-  </div>
-)
-
-const Controls = ({ active, handleReset, handlePlayPause }) => (
-  <div className='Controls'>
-    <button id='start_stop' onClick={handlePlayPause}>{ active ? <span>&#10074;&#10074;</span> : <span>&#9658;</span> }</button>
-    <button id='reset' onClick={handleReset}>&#8635;</button>
-  </div>
-)
-
-
-
-export default App;
+export default PomodoroApp;
