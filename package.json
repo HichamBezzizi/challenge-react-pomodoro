@@ -2,6 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://hichambezzizi.github.io/challenge-react-pomodoro/"
   "dependencies": {
     "@material-ui/core": "^4.5.1",
     "moment": "^2.24.0",
@@ -24,5 +25,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "gh-pages": "^2.1.1"
+  }
 }
