@@ -97,7 +97,7 @@ export class App extends React.Component {
   }
   render() {
     return (
-      <Container maxWidth="md" className="appContainer">
+      <Container maxWidth="sm" className="appContainer">
         <div>
           <Header />
           <div className='settings'>

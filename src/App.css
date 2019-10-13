@@ -5,17 +5,28 @@
   padding: 0;
 }
 
-body {
-  font-family: 'Merriweather', serif;
-  line-height: 1.4;
-  background-image: url('./assets/img/tomato.png');
+@keyframes backgroundImageAnimate {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
 }
+body {
+
+  background-image: url('./assets/img/tomato.png');
+  background-repeat: repeat;
+  animation: backgroundImageAnimate 50s linear infinite alternate;
+}
+
 .appContainer{
   background-color: #A90101;
   color: white;
   margin: 200px;
   height: 400px;
   border-radius: 20px 20px 50px 50px;
+  
 }
 .settings {
   display: flex;
@@ -33,7 +44,6 @@ body {
   justify-content: center;
   align-items: center;
   padding-top: 20px;
-
 }
 
 .Timer {
@@ -60,6 +70,7 @@ body {
   margin-top: 100px;
 }
 
+
 #start_stop{
   font-size: 20px;
 
@@ -70,5 +81,21 @@ body {
   font-size: 20px;
 
 }
+
+@keyframes animatedBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+body {
+
+  background-image: url('./assets/img/tomato.png');
+  background-repeat: repeat;
+  animation: animatedBackground 50s linear infinite alternate;
+}
+
 
 
