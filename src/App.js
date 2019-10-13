@@ -1,6 +1,6 @@
 import React from 'react';
 import Controls from './components/Controls';
-import { Header } from './components/Header';
+import Header from './components/Header';
 import Timer from './components/Timer';
 import SetTimer from './components/SetTimer';
 import Container from '@material-ui/core/Container';
@@ -20,17 +20,6 @@ export class App extends React.Component {
       mode: 'session',
     }
   }
-
-  // componentDidUpdate = ()  => {
-
-  //   if(this.state.time == 0  && this.state.mode === 'break') {
-  //     this.setState({time: this.state.breakValue * 60 * 1000, mode: 'session'})
-  //   }
-  //   if(this.state.time === 0 && this.state.mode === 'break'){
-  //     this.setState({ time: this.state.sessionValue * 60 * 1000, mode: 'session'})
-  //   }
-
-  // }
 
   componentDidUpdate(prevProps, prevState) {
 
@@ -97,7 +86,9 @@ export class App extends React.Component {
   }
   render() {
     return (
-      <Container maxWidth="sm" className="appContainer">
+      <Container
+        maxWidth="sm"
+        className="appContainer">
         <div>
           <Header />
           <div className='settings'>
@@ -114,8 +105,13 @@ export class App extends React.Component {
               handleClick={this.handleSetTimers}
             />
           </div>
-          <Timer mode={this.state.mode} time={moment(this.state.time).format('mm:ss')} />
-          <Controls active={this.state.active} handleReset={this.handleReset} handlePlayPause={this.handlePlayPause} />
+          <Timer
+            mode={this.state.mode}
+            time={moment(this.state.time).format('mm:ss')} />
+          <Controls
+            active={this.state.active}
+            handleReset={this.handleReset}
+            handlePlayPause={this.handlePlayPause} />
           <audio
             id='beep'
             src='https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg'
